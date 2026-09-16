@@ -1,0 +1,203 @@
+/**
+.is-pinned .tab-header {
+    padding: 0;
+    justify-content: center;
+}
+
+.tab-position.is-pinned .title {
+    display: none;
+}
+
+.tab-position.is-pinned {
+    width: 50px !important;
+}
+*/
+
+/* ===================================================== */
+/* VIVALDI CLEAN VERTICAL TABS CSS                      */
+/* ===================================================== */
+/* This CSS creates a clean, modern vertical tab layout with:
+ * - Pinned tabs as small squares in a grid
+ * - Regular tabs as full-width bars
+ * - No borders/outlines around tabs
+ * - Subtle backgrounds with hover and active states
+ * - Rounded corners throughout
+ */
+
+/* -------------------------------------------------- */
+/* 1) VARIABLES & BASIC SETUP                        */
+/* -------------------------------------------------- */
+:root {
+  --tiny-radius: 7px; /* Rounded corner radius for all tab elements */
+}
+
+/* Remove Vivaldi's default curved tab backgrounds and styling */
+.tab,
+.tab.active,
+.tab .tab-bg,
+.tab.active .tab-bg {
+  background: none !important;
+  box-shadow: none !important;
+  clip-path: none !important;
+  mask-image: none !important;
+  border-radius: var(--tiny-radius) !important;
+}
+
+.tab-border {
+  border-radius: var(--tiny-radius) !important;
+  mask-image: none !important;
+  clip-path: none !important;
+}
+
+/* -------------------------------------------------- */
+/* 2) VERTICAL TABBAR LAYOUT                          */
+/* -------------------------------------------------- */
+/* Preserve Vivaldi's resize functionality while customizing appearance */
+
+#tabs-tabbar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding-top: 0;
+}
+
+.sync-and-trash-container {
+  padding-block: 0.5rem;
+}
+
+/* -------------------------------------------------- */
+/* 3) GRID LAYOUT FOR MIXED TAB TYPES                 */
+/* -------------------------------------------------- */
+/* Creates a grid where pinned tabs are small squares and regular tabs span full width */
+
+#tabs-container[aria-orientation="vertical"] [role="tablist"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); /* 32px + 10px wider pinned cells */
+  grid-auto-rows: min-content;
+  gap: 0.4rem; /* Space between tabs */
+  padding-inline: 0.1rem;
+  overflow-y: auto; /* Allow scrolling when many tabs are open */
+}
+
+/* Default: regular tabs span full width of the grid */
+#tabs-container[aria-orientation="vertical"] [role="tablist"] > span {
+  grid-column: 1 / -1; /* Span entire row */
+  display: block;
+  background: none !important;
+  border: none !important;
+  border-radius: var(--tiny-radius) !important;
+  margin: 0 !important;
+}
+
+/* -------------------------------------------------- */
+/* 4) PINNED TAB STYLING                              */
+/* -------------------------------------------------- */
+/* Pinned tabs occupy single grid cells and show only icons */
+
+#tabs-container[aria-orientation="vertical"] [role="tablist"] > span:has(.is-pinned) {
+  grid-column: auto !important; /* Occupy single grid cell instead of full row */
+}
+
+.is-pinned .title {
+  display: none !important; /* Hide text, show only icons */
+}
+
+.is-pinned .tab-header {
+  justify-content: center !important; /* Center the icon */
+}
+
+/* Pinned tab backgrounds and states */
+.is-pinned .tab-wrapper {
+  background: rgba(56, 55, 61, 0.235) !important; /* Subtle dark background */
+  border: none !important;
+  border-radius: var(--tiny-radius) !important;
+}
+
+/* Active pinned tab - lighter background (high specificity to override Vivaldi) */
+#tabs-container[aria-orientation="vertical"] .tab-position.is-pinned .tab-wrapper.active {
+  background: rgba(255, 255, 255, 0.148) !important;
+}
+
+/* Hover effect for pinned tabs */
+.is-pinned:hover .tab-wrapper {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* -------------------------------------------------- */
+/* 4b) SEPARATOR BETWEEN PINNED & REGULAR TABS        */
+/* -------------------------------------------------- */
+/* Vivaldi positions .separator absolutely with its own --PositionY
+   (computed for stacked pinned tabs), so it drifts onto the 2nd tab.
+   Making it a static grid item lets it flow in the DOM exactly
+   between the pinned tabs and the first regular tab. */
+
+#tabs-container[aria-orientation="vertical"] [role="tablist"] > .separator {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  grid-column: 1 / -1; /* Full-width row between pinned grid and tabs */
+  width: 100% !important;
+  height: auto !important;
+  margin: 5px auto;
+  z-index: auto !important;
+}
+
+#tabs-container[aria-orientation="vertical"] [role="tablist"] > .separator hr {
+  border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+  background: none !important;
+  width: 100%;
+  margin: 0;
+}
+
+/* -------------------------------------------------- */
+/* 5) REGULAR TAB STYLING                             */
+/* -------------------------------------------------- */
+/* Regular tabs span full width and show text + icons */
+
+.tab-position {
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+  transform: none !important;
+  height: 1.8rem; /* Height of each regular tab */
+}
+
+.tab .tab-header {
+  flex-grow: 1;
+  padding: 0.1rem !important;
+  filter: none !important;
+}
+
+.tab-wrapper {
+  margin: 0 !important;
+  max-height: none !important;
+  border: none !important;
+  border-radius: var(--tiny-radius) !important;
+}
+
+/* Active regular tab - lighter background (high specificity to override Vivaldi) */
+#tabs-container[aria-orientation="vertical"] .tab-position:not(.is-pinned) .tab-wrapper.active {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Hover effect for regular tabs - only appears on hover */
+#tabs-container[aria-orientation="vertical"] .tab-position:not(.is-pinned):hover .tab-wrapper {
+  background: rgba(255, 255, 255, 0.098) !important;
+}
+
+/* -------------------------------------------------- */
+/* 6) CLEANUP & FINAL TOUCHES                         */
+/* -------------------------------------------------- */
+
+/* Hide tab badge counters (notification numbers) */
+.button-badge {
+  display: none !important;
+}
+
+/* Ensure new tab button positioning remains normal */
+.button-toolbar.newtab {
+  top: auto !important;
+  left: auto !important;
+}
