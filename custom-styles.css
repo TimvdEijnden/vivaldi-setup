@@ -201,3 +201,10 @@
   top: auto !important;
   left: auto !important;
 }
+
+/* Let address-field permission popups extend beyond the vertical tabbar. */
+.toolbar-small:has(.addressfield-popup-container.permission-popup),
+.toolbar-insideinput:has(.addressfield-popup-container.permission-popup),
+#tabs-tabbar-container:has(.addressfield-popup-container.permission-popup) {
+  overflow: visible !important;
+}
