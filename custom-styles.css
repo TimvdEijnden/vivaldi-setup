@@ -80,6 +80,22 @@
   overflow-y: auto; /* Allow scrolling when many tabs are open */
 }
 
+/* Vivaldi 8.3+ renders pinned tabs in a separate .pinned-group span above the tab strip. */
+#tabs-container[aria-orientation="vertical"] .pinned-group {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+  grid-auto-rows: min-content;
+  gap: 0.4rem;
+  margin-inline: 6px;
+  padding-inline: 0.1rem;
+  width: auto !important;
+  height: auto !important;
+}
+
+.pinned-group > span {
+  display: block;
+}
+
 /* Default: regular tabs span full width of the grid */
 #tabs-container[aria-orientation="vertical"] [role="tablist"] > span {
   grid-column: 1 / -1; /* Span entire row */
@@ -202,9 +218,119 @@
   left: auto !important;
 }
 
-/* Let address-field permission popups extend beyond the vertical tabbar. */
-.toolbar-small:has(.addressfield-popup-container.permission-popup),
-.toolbar-insideinput:has(.addressfield-popup-container.permission-popup),
-#tabs-tabbar-container:has(.addressfield-popup-container.permission-popup) {
+/* Place the address bar on its own full-width row in the vertical tabbar. */
+.toolbar-vertical:has(.UrlBar-AddressField) {
+  flex-wrap: nowrap !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.UrlBar-AddressField {
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: clip !important;
+}
+
+.UrlBar-UrlFieldWrapper,
+.UrlField,
+.UrlField-ClickToEdit {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.UrlField-ClickToEdit {
+  overflow: hidden !important;
+}
+
+.UrlBar-UrlFieldWrapper {
+  flex: 1 1 0% !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+#urlFieldInput {
+  box-sizing: border-box !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Expand a focused long URL over the webpage without widening or scrolling the tabbar. */
+.UrlBar-AddressField:has(#urlFieldInput:focus) {
+  position: relative !important;
+  flex: 0 0 max-content !important;
+  width: max-content !important;
+  min-width: 100% !important;
+  max-width: calc(100vw - 32px) !important;
+  z-index: 10000 !important;
   overflow: visible !important;
+}
+
+.OmniDropdown {
+    min-width: max-content;
+}
+.toolbar-small:has(#urlFieldInput:focus) {
+  position: relative !important;
+  display: flex !important;
+  width: max-content !important;
+  min-width: 100% !important;
+  max-width: calc(100vw - 32px) !important;
+  overflow: visible !important;
+  z-index: 10000 !important;
+}
+
+.UrlBar-AddressField:has(#urlFieldInput:focus) .UrlBar-UrlFieldWrapper,
+.UrlBar-AddressField:has(#urlFieldInput:focus) .UrlField,
+.UrlBar-AddressField:has(#urlFieldInput:focus) .UrlField-ClickToEdit {
+  position: relative !important;
+  flex: 0 1 auto !important;
+  width: max-content !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 128px) !important;
+  overflow: visible !important;
+}
+
+.UrlBar-AddressField:has(#urlFieldInput:focus) #urlFieldInput {
+  field-sizing: content !important;
+  flex: 0 1 auto !important;
+  width: max-content !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 128px) !important;
+}
+
+/* Let the focused address-bar container paint over the webpage without changing
+   the tabbar's width. Keep its URL and action icons in the same flex row. */
+.toolbar-vertical:has(#urlFieldInput:focus),
+.toolbar-small:has(#urlFieldInput:focus),
+.toolbar-insideinput:has(#urlFieldInput:focus),
+.tabbar-wrapper:has(#urlFieldInput:focus),
+#tabs-tabbar-container:has(#urlFieldInput:focus) {
+  position: relative !important;
+  z-index: 10000 !important;
+  overflow: visible !important;
+}
+
+/* A popup must escape every clipping ancestor, even when the URL input loses focus. */
+.UrlBar-AddressField:has(.button-popup),
+.UrlBar-UrlFieldWrapper:has(.button-popup),
+.UrlField:has(.button-popup),
+.UrlField-ClickToEdit:has(.button-popup),
+.toolbar-vertical:has(.button-popup),
+.toolbar-small:has(.button-popup),
+.toolbar-insideinput:has(.button-popup),
+.tabbar-wrapper:has(.button-popup),
+#tabs-tabbar-container:has(.button-popup) {
+  overflow: visible !important;
+}
+
+/* Keep tabbar popups above the webpage without expanding the address field. */
+.tabbar-wrapper:has(.button-popup),
+#tabs-tabbar-container:has(.button-popup) {
+  position: relative !important;
+  z-index: 10000 !important;
 }
